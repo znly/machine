@@ -409,7 +409,7 @@ extern crate syn;
 extern crate quote;
 
 use std::collections::{HashMap, HashSet};
-use std::fs::{File, OpenOptions, create_dir};
+use std::fs::{File, OpenOptions, create_dir_all};
 use std::io::{Seek, Write};
 
 use case::CaseExt;
@@ -446,7 +446,7 @@ pub fn machine(input: proc_macro::TokenStream) -> syn::export::TokenStream {
     trace!("generated: {}", gen);
 
     let file_name = format!("target/machine/{}.rs", name.to_string().to_lowercase());
-    let _ = create_dir("target/machine");
+    let _ = create_dir_all("target/machine");
     File::create(&file_name)
         .and_then(|mut file| {
             file.seek(std::io::SeekFrom::End(0))?;
@@ -651,7 +651,7 @@ impl Transitions {
             "target/machine/{}.dot",
             self.machine_name.to_string().to_lowercase()
         );
-        let _ = create_dir("target/machine");
+        let _ = create_dir_all("target/machine");
         let mut file = File::create(&file_name).expect("error opening dot file");
 
         file.write_all(format!("digraph {} {{\n", self.machine_name.to_string()).as_bytes())
@@ -819,7 +819,7 @@ pub fn transitions(input: proc_macro::TokenStream) -> syn::export::TokenStream {
 
     //println!("generated: {:?}", gen);
     trace!("generated transitions: {}", stream);
-    let _ = create_dir("target/machine");
+    let _ = create_dir_all("target/machine");
     let file_name = format!("target/machine/{}.rs", machine_name.to_string().to_lowercase());
     OpenOptions::new()
         .create(true)
@@ -1032,7 +1032,7 @@ pub fn methods(input: proc_macro::TokenStream) -> syn::export::TokenStream {
     stream.extend(proc_macro::TokenStream::from(toks));
 
     let file_name = format!("target/machine/{}.rs", machine_name.to_string().to_lowercase());
-    let _ = create_dir("target/machine");
+    let _ = create_dir_all("target/machine");
     OpenOptions::new()
         .create(true)
         .write(true)
